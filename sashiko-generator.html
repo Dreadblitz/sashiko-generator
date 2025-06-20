@@ -478,26 +478,42 @@
                 <h3 class="section-title">⚙️ Personalización</h3>
                 
                 <div class="control-group">
-                    <label class="control-label">Escala del patrón</label>
+                    <label class="control-label">Tamaño del patrón</label>
                     <div class="range-container">
-                        <input type="range" class="range-input" id="scaleRange" min="5" max="50" value="15">
-                        <span class="range-value" id="scaleValue">15mm</span>
+                        <input type="range" class="range-input" id="patternSizeRange" min="5" max="50" value="40">
+                        <span class="range-value" id="patternSizeValue">40mm</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Espaciado horizontal</label>
+                    <div class="range-container">
+                        <input type="range" class="range-input" id="spacingXRange" min="5" max="75" value="55">
+                        <span class="range-value" id="spacingXValue">55mm</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Espaciado vertical</label>
+                    <div class="range-container">
+                        <input type="range" class="range-input" id="spacingYRange" min="5" max="75" value="40">
+                        <span class="range-value" id="spacingYValue">40mm</span>
                     </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label">Grosor de línea</label>
                     <div class="range-container">
-                        <input type="range" class="range-input" id="strokeRange" min="1" max="8" value="2">
-                        <span class="range-value" id="strokeValue">2px</span>
+                        <input type="range" class="range-input" id="strokeRange" min="0.1" max="3" step="0.1" value="1.0">
+                        <span class="range-value" id="strokeValue">1.0mm</span>
                     </div>
                 </div>
 
                 <div class="control-group">
                     <label class="control-label">Separación de línea</label>
                     <div class="range-container">
-                        <input type="range" class="range-input" id="dashRange" min="1" max="10" value="3">
-                        <span class="range-value" id="dashValue">3mm</span>
+                        <input type="range" class="range-input" id="dashRange" min="1" max="10" value="2">
+                        <span class="range-value" id="dashValue">2mm</span>
                     </div>
                 </div>
 
@@ -584,10 +600,12 @@
         // Estado de la aplicación
         let state = {
             currentPattern: 'asanoha',
-            scale: 15, // Escala en mm
-            strokeWidth: 2,
+            patternSize: 40, // Tamaño del patrón individual en mm
+            spacingX: 55, // Espaciado horizontal en mm
+            spacingY: 40, // Espaciado vertical en mm
+            strokeWidth: 1.0, // Grosor de línea en mm
             color: '#1e1b4b',
-            dashGap: 3, // Separación de líneas segmentadas en mm
+            dashGap: 2, // Separación de líneas segmentadas en mm
             workAreaWidth: 21.0, // A4 width
             workAreaHeight: 29.7, // A4 height
             offsetX: 0, // Desplazamiento horizontal del patrón
@@ -605,8 +623,12 @@
         const canvas = document.getElementById('patternCanvas');
         const ctx = canvas.getContext('2d');
         const patternInputs = document.querySelectorAll('input[name="pattern"]');
-        const scaleRange = document.getElementById('scaleRange');
-        const scaleValue = document.getElementById('scaleValue');
+        const patternSizeRange = document.getElementById('patternSizeRange');
+        const patternSizeValue = document.getElementById('patternSizeValue');
+        const spacingXRange = document.getElementById('spacingXRange');
+        const spacingXValue = document.getElementById('spacingXValue');
+        const spacingYRange = document.getElementById('spacingYRange');
+        const spacingYValue = document.getElementById('spacingYValue');
         const strokeRange = document.getElementById('strokeRange');
         const strokeValue = document.getElementById('strokeValue');
         const dashRange = document.getElementById('dashRange');
@@ -715,32 +737,34 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Calcular escala para el patrón (convertir mm a px)
+            // Calcular escalas para el patrón (convertir mm a px)
             const scaleX = displayWidth / canvasWidth;
             const scaleY = displayHeight / canvasHeight;
-            const patternSize = state.scale * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
+            const patternSizeX = state.spacingX * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
+            const patternSizeY = state.spacingY * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
+            const patternSize = state.patternSize * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY); // Tamaño del patrón individual
             
             // Generar patrón
             const patternFunc = patterns[state.currentPattern];
             if (patternFunc) {
                 // Calcular rango expandido para cubrir toda el área incluso con offset
-                const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSize) + 2;
-                const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSize) + 2;
+                const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSizeX) + 2;
+                const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSizeY) + 2;
                 
-                const cols = Math.ceil(displayWidth / patternSize) + extraCols * 2;
-                const rows = Math.ceil(displayHeight / patternSize) + extraRows * 2;
+                const cols = Math.ceil(displayWidth / patternSizeX) + extraCols * 2;
+                const rows = Math.ceil(displayHeight / patternSizeY) + extraRows * 2;
                 
                 const startCol = -extraCols;
                 const startRow = -extraRows;
                 
                 for (let row = startRow; row < rows + startRow; row++) {
                     for (let col = startCol; col < cols + startCol; col++) {
-                        let x = col * patternSize;
-                        let y = row * patternSize;
+                        let x = col * patternSizeX;
+                        let y = row * patternSizeY;
                         
                         // Offset alternado para patrones como seigaiha
                         if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
-                            x += patternSize / 2;
+                            x += patternSizeX / 2;
                         }
                         
                         const finalX = x + state.offsetX;
@@ -749,7 +773,8 @@
                         // Solo dibujar si está dentro o cerca del área visible
                         if (finalX > -patternSize && finalX < displayWidth + patternSize && 
                             finalY > -patternSize && finalY < displayHeight + patternSize) {
-                            patternFunc(ctx, finalX, finalY, patternSize, state.strokeWidth * Math.min(scaleX, scaleY), state.color, state.dashGap);
+                            const strokeWidthPx = state.strokeWidth * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
+                            patternFunc(ctx, finalX, finalY, patternSize, strokeWidthPx, state.color, state.dashGap);
                         }
                     }
                 }
@@ -778,9 +803,21 @@
             });
         });
 
-        scaleRange.addEventListener('input', function() {
-            state.scale = parseInt(this.value);
-            scaleValue.textContent = this.value + 'mm';
+        patternSizeRange.addEventListener('input', function() {
+            state.patternSize = parseInt(this.value);
+            patternSizeValue.textContent = this.value + 'mm';
+            renderPattern();
+        });
+
+        spacingXRange.addEventListener('input', function() {
+            state.spacingX = parseInt(this.value);
+            spacingXValue.textContent = this.value + 'mm';
+            renderPattern();
+        });
+
+        spacingYRange.addEventListener('input', function() {
+            state.spacingY = parseInt(this.value);
+            spacingYValue.textContent = this.value + 'mm';
             renderPattern();
         });
 
@@ -791,8 +828,8 @@
         });
 
         strokeRange.addEventListener('input', function() {
-            state.strokeWidth = parseInt(this.value);
-            strokeValue.textContent = this.value + 'px';
+            state.strokeWidth = parseFloat(this.value);
+            strokeValue.textContent = this.value + 'mm';
             renderPattern();
         });
 
@@ -857,25 +894,27 @@
                 
                 const patternFunc = patterns[state.currentPattern];
                 if (patternFunc) {
-                    const patternSizePx = state.scale * CONFIG.MM_TO_PX;
+                    const patternSizeXPx = state.spacingX * CONFIG.MM_TO_PX;
+                    const patternSizeYPx = state.spacingY * CONFIG.MM_TO_PX;
+                    const patternSizePx = state.patternSize * CONFIG.MM_TO_PX;
                     
                     // Calcular rango expandido para PDF también
-                    const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSizePx) + 2;
-                    const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSizePx) + 2;
+                    const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSizeXPx) + 2;
+                    const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSizeYPx) + 2;
                     
-                    const cols = Math.ceil(fullWidth / patternSizePx) + extraCols * 2;
-                    const rows = Math.ceil(fullHeight / patternSizePx) + extraRows * 2;
+                    const cols = Math.ceil(fullWidth / patternSizeXPx) + extraCols * 2;
+                    const rows = Math.ceil(fullHeight / patternSizeYPx) + extraRows * 2;
                     
                     const startCol = -extraCols;
                     const startRow = -extraRows;
                     
                     for (let row = startRow; row < rows + startRow; row++) {
                         for (let col = startCol; col < cols + startCol; col++) {
-                            let x = col * patternSizePx;
-                            let y = row * patternSizePx;
+                            let x = col * patternSizeXPx;
+                            let y = row * patternSizeYPx;
                             
                             if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
-                                x += patternSizePx / 2;
+                                x += patternSizeXPx / 2;
                             }
                             
                             const finalX = x + state.offsetX;
@@ -884,7 +923,8 @@
                             // Solo dibujar si está dentro o cerca del área del PDF
                             if (finalX > -patternSizePx && finalX < fullWidth + patternSizePx && 
                                 finalY > -patternSizePx && finalY < fullHeight + patternSizePx) {
-                                patternFunc(tempCtx, finalX, finalY, patternSizePx, state.strokeWidth, state.color, state.dashGap);
+                                const strokeWidthPx = state.strokeWidth * CONFIG.MM_TO_PX;
+                                patternFunc(tempCtx, finalX, finalY, patternSizePx, strokeWidthPx, state.color, state.dashGap);
                             }
                         }
                     }
