@@ -123,45 +123,30 @@
 
         /* Selector de patrones */
         .pattern-selector {
-            display: grid;
-            gap: 0.75rem;
+            width: 100%;
         }
 
-        .pattern-option {
-            position: relative;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: var(--white);
-        }
-
-        .pattern-option:hover {
-            border-color: var(--indigo-300);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .pattern-option.active {
-            border-color: var(--indigo-500);
-            background: var(--indigo-50);
-        }
-
-        .pattern-option input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .pattern-name {
+        .pattern-dropdown {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--gray-900);
-            margin-bottom: 0.25rem;
+            background: var(--white);
+            cursor: pointer;
+            transition: border-color 0.2s ease;
         }
 
-        .pattern-description {
-            font-size: 0.875rem;
-            color: var(--gray-600);
+        .pattern-dropdown:focus {
+            outline: none;
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 3px var(--indigo-100);
+        }
+
+        .pattern-dropdown:hover {
+            border-color: var(--indigo-300);
         }
 
         /* Controles de personalización */
@@ -462,14 +447,13 @@
             <section class="panel-section">
                 <h3 class="section-title">🎨 Patrón</h3>
                 <div class="pattern-selector">
-                    <label class="pattern-option active">
-                        <input type="radio" name="pattern" value="asanoha" checked>
-                        <div class="pattern-name">Asanoha</div>
-                    </label>
-                    <label class="pattern-option">
-                        <input type="radio" name="pattern" value="seigaiha">
-                        <div class="pattern-name">Seigaiha</div>
-                    </label>
+                    <select class="pattern-dropdown" id="patternSelect">
+                        <option value="asanoha" selected>Asanoha</option>
+                        <option value="seigaiha">Seigaiha</option>
+                        <option value="shippo">Shippo</option>
+                        <option value="yabane">Yabane</option>
+                        <option value="uroko">Uroko</option>
+                    </select>
                 </div>
             </section>
 
@@ -593,6 +577,18 @@
                 seigaiha: {
                     name: 'Seigaiha', 
                     description: 'Olas del mar semicirculares'
+                },
+                shippo: {
+                    name: 'Shippo',
+                    description: 'Círculos entrelazados de la armonía'
+                },
+                yabane: {
+                    name: 'Yabane',
+                    description: 'Plumas de flecha tradicionales'
+                },
+                uroko: {
+                    name: 'Uroko',
+                    description: 'Escamas de dragón triangulares'
                 }
             }
         };
@@ -622,7 +618,7 @@
         // Referencias DOM
         const canvas = document.getElementById('patternCanvas');
         const ctx = canvas.getContext('2d');
-        const patternInputs = document.querySelectorAll('input[name="pattern"]');
+        const patternSelect = document.getElementById('patternSelect');
         const patternSizeRange = document.getElementById('patternSizeRange');
         const patternSizeValue = document.getElementById('patternSizeValue');
         const spacingXRange = document.getElementById('spacingXRange');
@@ -705,6 +701,104 @@
                 
                 // Restaurar líneas sólidas
                 ctx.setLineDash([]);
+            },
+
+            shippo: function(ctx, x, y, size, strokeWidth, color, dashGap) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                const radius = size * 0.4;
+                
+                // Círculo central
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Círculos entrelazados en las 4 direcciones
+                const offset = radius * 0.7;
+                const positions = [
+                    { dx: offset, dy: 0 },      // derecha
+                    { dx: -offset, dy: 0 },     // izquierda
+                    { dx: 0, dy: offset },      // abajo
+                    { dx: 0, dy: -offset }      // arriba
+                ];
+                
+                positions.forEach(pos => {
+                    ctx.beginPath();
+                    ctx.arc(x + pos.dx, y + pos.dy, radius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                });
+                
+                // Restaurar líneas sólidas
+                ctx.setLineDash([]);
+            },
+
+            yabane: function(ctx, x, y, size, strokeWidth, color, dashGap) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                const halfSize = size / 2;
+                const featherWidth = halfSize * 0.6;
+                
+                ctx.beginPath();
+                
+                // Pluma izquierda
+                ctx.moveTo(x - halfSize, y - halfSize);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x - featherWidth, y + halfSize);
+                
+                // Pluma derecha
+                ctx.moveTo(x + halfSize, y - halfSize);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x + featherWidth, y + halfSize);
+                
+                ctx.stroke();
+                
+                // Restaurar líneas sólidas
+                ctx.setLineDash([]);
+            },
+
+            uroko: function(ctx, x, y, size, strokeWidth, color, dashGap) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                const halfSize = size / 2;
+                const height = halfSize * 0.8;
+                
+                ctx.beginPath();
+                
+                // Triángulo de escama
+                ctx.moveTo(x, y - height);      // punta superior
+                ctx.lineTo(x - halfSize, y + height);  // esquina inferior izquierda
+                ctx.lineTo(x + halfSize, y + height);  // esquina inferior derecha
+                ctx.closePath();
+                
+                ctx.stroke();
+                
+                // Líneas internas de la escama
+                ctx.beginPath();
+                ctx.moveTo(x, y - height);
+                ctx.lineTo(x, y + height * 0.3);
+                
+                ctx.moveTo(x - halfSize * 0.5, y);
+                ctx.lineTo(x + halfSize * 0.5, y);
+                
+                ctx.stroke();
+                
+                // Restaurar líneas sólidas
+                ctx.setLineDash([]);
             }
         };
 
@@ -762,8 +856,11 @@
                         let x = col * patternSizeX;
                         let y = row * patternSizeY;
                         
-                        // Offset alternado para patrones como seigaiha
+                        // Offset alternado para ciertos patrones
                         if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
+                            x += patternSizeX / 2;
+                        }
+                        if (state.currentPattern === 'uroko' && row % 2 === 1) {
                             x += patternSizeX / 2;
                         }
                         
@@ -782,25 +879,17 @@
         }
 
         // Event listeners
-        patternInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                state.currentPattern = this.value;
-                
-                // Actualizar UI
-                document.querySelectorAll('.pattern-option').forEach(option => {
-                    option.classList.remove('active');
-                });
-                this.parentElement.classList.add('active');
-                
-                // Actualizar información del patrón
-                const patternInfo = CONFIG.patterns[state.currentPattern];
-                if (patternInfo) {
-                    patternTitle.textContent = patternInfo.name;
-                    patternDesc.textContent = patternInfo.description;
-                }
-                
-                renderPattern();
-            });
+        patternSelect.addEventListener('change', function() {
+            state.currentPattern = this.value;
+            
+            // Actualizar información del patrón
+            const patternInfo = CONFIG.patterns[state.currentPattern];
+            if (patternInfo) {
+                patternTitle.textContent = patternInfo.name;
+                patternDesc.textContent = patternInfo.description;
+            }
+            
+            renderPattern();
         });
 
         patternSizeRange.addEventListener('input', function() {
@@ -914,6 +1003,9 @@
                             let y = row * patternSizeYPx;
                             
                             if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
+                                x += patternSizeXPx / 2;
+                            }
+                            if (state.currentPattern === 'uroko' && row % 2 === 1) {
                                 x += patternSizeXPx / 2;
                             }
                             
