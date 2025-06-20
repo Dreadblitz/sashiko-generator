@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Patrones Sashiko</title>
+    <style>
+        /* Importar fuente moderna */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        
+        /* Variables CSS para paleta japonesa */
+        :root {
+            --indigo-900: #1e1b4b;
+            --indigo-700: #3730a3;
+            --indigo-500: #6366f1;
+            --indigo-100: #e0e7ff;
+            --indigo-50: #f0f9ff;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-500: #6b7280;
+            --gray-300: #d1d5db;
+            --gray-100: #f3f4f6;
+            --gray-50: #f9fafb;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 6px;
+        }
+
+        /* Reset y base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--indigo-50) 0%, var(--gray-50) 100%);
+            color: var(--gray-900);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--indigo-700);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo::before {
+            content: "⚡";
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        /* Layout principal */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Panel de controles */
+        .controls-panel {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .panel-section {
+            margin-bottom: 2rem;
+        }
+
+        .panel-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Selector de patrones */
+        .pattern-selector {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .pattern-option {
+            position: relative;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--white);
+        }
+
+        .pattern-option:hover {
+            border-color: var(--indigo-300);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pattern-option.active {
+            border-color: var(--indigo-500);
+            background: var(--indigo-50);
+        }
+
+        .pattern-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pattern-name {
+            font-weight: 500;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .pattern-description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        /* Controles de personalización */
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 3px var(--indigo-100);
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .range-input {
+            flex: 1;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--indigo-500);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .range-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            min-width: 3rem;
+            text-align: right;
+        }
+
+        /* Área de trabajo y canvas */
+        .canvas-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .canvas-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .canvas-control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .canvas-control-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            white-space: nowrap;
+        }
+
+        .canvas-control-input {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            min-width: 80px;
+            max-width: 120px;
+        }
+
+        .canvas-control-input:focus {
+            outline: none;
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 2px var(--indigo-100);
+        }
+
+        .canvas-unit {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .pattern-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .pattern-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .pattern-desc {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .download-btn {
+            background: var(--indigo-500);
+            color: var(--white);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background: var(--indigo-600);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--gray-300);
+        }
+
+        #patternCanvas {
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            cursor: grab;
+        }
+
+        #patternCanvas.dragging {
+            cursor: grabbing;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .controls-panel {
+                position: static;
+                order: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .controls-panel,
+            .canvas-container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animaciones suaves */
+        .pattern-option,
+        .control-input,
+        .download-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Estados de carga */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px;
+            border: 2px solid var(--indigo-200);
+            border-top: 2px solid var(--indigo-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div>
+                <h1 class="logo">Sashiko Generator</h1>
+                <p class="subtitle">Crea patrones japoneses tradicionales de bordado</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-container">
+        <!-- Panel de controles -->
+        <aside class="controls-panel">
+            <!-- Selector de patrones -->
+            <section class="panel-section">
+                <h3 class="section-title">🎨 Patrón</h3>
+                <div class="pattern-selector">
+                    <label class="pattern-option active">
+                        <input type="radio" name="pattern" value="asanoha" checked>
+                        <div class="pattern-name">Asanoha</div>
+                        <div class="pattern-description">Hojas de cáñamo hexagonales</div>
+                    </label>
+                    <label class="pattern-option">
+                        <input type="radio" name="pattern" value="seigaiha">
+                        <div class="pattern-name">Seigaiha</div>
+                        <div class="pattern-description">Olas del mar semicirculares</div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Personalización -->
+            <section class="panel-section">
+                <h3 class="section-title">⚙️ Personalización</h3>
+                
+                <div class="control-group">
+                    <label class="control-label">Escala del patrón</label>
+                    <div class="range-container">
+                        <input type="range" class="range-input" id="scaleRange" min="5" max="50" value="15">
+                        <span class="range-value" id="scaleValue">15mm</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Grosor de línea</label>
+                    <div class="range-container">
+                        <input type="range" class="range-input" id="strokeRange" min="1" max="8" value="2">
+                        <span class="range-value" id="strokeValue">2px</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Separación de línea</label>
+                    <div class="range-container">
+                        <input type="range" class="range-input" id="dashRange" min="1" max="10" value="3">
+                        <span class="range-value" id="dashValue">3mm</span>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Botón de descarga -->
+            <section class="panel-section">
+                <button class="download-btn" id="downloadBtn">
+                    📥 Descargar PDF
+                </button>
+            </section>
+        </aside>
+
+        <!-- Área del canvas -->
+        <section class="canvas-container">
+            <div class="canvas-header">
+                <div class="pattern-info">
+                    <h2 class="pattern-title" id="patternTitle">Asanoha</h2>
+                    <p class="pattern-desc" id="patternDesc">Hojas de cáñamo hexagonales</p>
+                </div>
+                <div class="canvas-controls">
+                    <div class="canvas-control-group">
+                        <label class="canvas-control-label">Tamaño:</label>
+                        <select class="canvas-control-input" id="paperSizeSelect">
+                            <option value="custom">Personalizado</option>
+                            <option value="a4" selected>A4</option>
+                            <option value="a3">A3</option>
+                            <option value="a5">A5</option>
+                            <option value="letter">Carta</option>
+                            <option value="legal">Legal</option>
+                            <option value="square20">20×20cm</option>
+                            <option value="square15">15×15cm</option>
+                        </select>
+                    </div>
+                    <div class="canvas-control-group">
+                        <label class="canvas-control-label">Ancho:</label>
+                        <input type="number" class="canvas-control-input" id="widthInput" value="21.0" step="0.1">
+                        <span class="canvas-unit">cm</span>
+                    </div>
+                    <div class="canvas-control-group">
+                        <label class="canvas-control-label">Alto:</label>
+                        <input type="number" class="canvas-control-input" id="heightInput" value="29.7" step="0.1">
+                        <span class="canvas-unit">cm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <canvas id="patternCanvas" width="600" height="600"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!-- jsPDF CDN embebido como base64 para funcionar offline -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // Configuración global
+        const CONFIG = {
+            DPI: 96,
+            CM_TO_PX: 37.795275591, // 96 DPI conversion
+            MM_TO_PX: 3.7795275591, // mm to pixels conversion
+            paperSizes: {
+                a4: { width: 21.0, height: 29.7 },
+                a3: { width: 29.7, height: 42.0 },
+                a5: { width: 14.8, height: 21.0 },
+                letter: { width: 21.6, height: 27.9 },
+                legal: { width: 21.6, height: 35.6 },
+                square20: { width: 20.0, height: 20.0 },
+                square15: { width: 15.0, height: 15.0 }
+            },
+            patterns: {
+                asanoha: {
+                    name: 'Asanoha',
+                    description: 'Hojas de cáñamo hexagonales'
+                },
+                seigaiha: {
+                    name: 'Seigaiha', 
+                    description: 'Olas del mar semicirculares'
+                }
+            }
+        };
+
+        // Estado de la aplicación
+        let state = {
+            currentPattern: 'asanoha',
+            scale: 15, // Escala en mm
+            strokeWidth: 2,
+            color: '#1e1b4b',
+            dashGap: 3, // Separación de líneas segmentadas en mm
+            workAreaWidth: 21.0, // A4 width
+            workAreaHeight: 29.7, // A4 height
+            offsetX: 0, // Desplazamiento horizontal del patrón
+            offsetY: 0  // Desplazamiento vertical del patrón
+        };
+
+        // Estado del arrastre
+        let dragState = {
+            isDragging: false,
+            lastX: 0,
+            lastY: 0
+        };
+
+        // Referencias DOM
+        const canvas = document.getElementById('patternCanvas');
+        const ctx = canvas.getContext('2d');
+        const patternInputs = document.querySelectorAll('input[name="pattern"]');
+        const scaleRange = document.getElementById('scaleRange');
+        const scaleValue = document.getElementById('scaleValue');
+        const strokeRange = document.getElementById('strokeRange');
+        const strokeValue = document.getElementById('strokeValue');
+        const dashRange = document.getElementById('dashRange');
+        const dashValue = document.getElementById('dashValue');
+        const paperSizeSelect = document.getElementById('paperSizeSelect');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const patternTitle = document.getElementById('patternTitle');
+        const patternDesc = document.getElementById('patternDesc');
+
+        // Funciones de patrones Sashiko
+        const patterns = {
+            asanoha: function(ctx, x, y, size, strokeWidth, color, dashGap) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                ctx.beginPath();
+                
+                const radius = size / 2;
+                const hexHeight = radius * Math.sqrt(3);
+                
+                // Dibujar hexágono
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const px = x + radius * Math.cos(angle);
+                    const py = y + radius * Math.sin(angle);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(px, py);
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+                ctx.closePath();
+                ctx.stroke();
+                
+                // Líneas internas del patrón asanoha
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const px = x + (radius * 0.6) * Math.cos(angle);
+                    const py = y + (radius * 0.6) * Math.sin(angle);
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                
+                // Restaurar líneas sólidas
+                ctx.setLineDash([]);
+            },
+
+            seigaiha: function(ctx, x, y, size, strokeWidth, color, dashGap) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                const radius = size / 2;
+                const numArcs = 3;
+                
+                for (let i = 0; i < numArcs; i++) {
+                    ctx.beginPath();
+                    const currentRadius = radius * (1 - i * 0.3);
+                    ctx.arc(x, y + radius, currentRadius, Math.PI, 0, false);
+                    ctx.stroke();
+                }
+                
+                // Restaurar líneas sólidas
+                ctx.setLineDash([]);
+            }
+        };
+
+        // Función para renderizar el patrón
+        function renderPattern() {
+            // Calcular dimensiones del canvas basado en el área de trabajo
+            const canvasWidth = state.workAreaWidth * CONFIG.CM_TO_PX;
+            const canvasHeight = state.workAreaHeight * CONFIG.CM_TO_PX;
+            
+            // Ajustar tamaño del canvas manteniendo proporciones para la vista
+            const maxDisplaySize = 600;
+            const aspectRatio = canvasWidth / canvasHeight;
+            let displayWidth, displayHeight;
+            
+            if (aspectRatio > 1) {
+                displayWidth = Math.min(maxDisplaySize, canvasWidth);
+                displayHeight = displayWidth / aspectRatio;
+            } else {
+                displayHeight = Math.min(maxDisplaySize, canvasHeight);
+                displayWidth = displayHeight * aspectRatio;
+            }
+            
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+            canvas.style.width = displayWidth + 'px';
+            canvas.style.height = displayHeight + 'px';
+            
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Calcular escala para el patrón (convertir mm a px)
+            const scaleX = displayWidth / canvasWidth;
+            const scaleY = displayHeight / canvasHeight;
+            const patternSize = state.scale * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
+            
+            // Generar patrón
+            const patternFunc = patterns[state.currentPattern];
+            if (patternFunc) {
+                // Calcular rango expandido para cubrir toda el área incluso con offset
+                const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSize) + 2;
+                const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSize) + 2;
+                
+                const cols = Math.ceil(displayWidth / patternSize) + extraCols * 2;
+                const rows = Math.ceil(displayHeight / patternSize) + extraRows * 2;
+                
+                const startCol = -extraCols;
+                const startRow = -extraRows;
+                
+                for (let row = startRow; row < rows + startRow; row++) {
+                    for (let col = startCol; col < cols + startCol; col++) {
+                        let x = col * patternSize;
+                        let y = row * patternSize;
+                        
+                        // Offset alternado para patrones como seigaiha
+                        if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
+                            x += patternSize / 2;
+                        }
+                        
+                        const finalX = x + state.offsetX;
+                        const finalY = y + state.offsetY;
+                        
+                        // Solo dibujar si está dentro o cerca del área visible
+                        if (finalX > -patternSize && finalX < displayWidth + patternSize && 
+                            finalY > -patternSize && finalY < displayHeight + patternSize) {
+                            patternFunc(ctx, finalX, finalY, patternSize, state.strokeWidth * Math.min(scaleX, scaleY), state.color, state.dashGap);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Event listeners
+        patternInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                state.currentPattern = this.value;
+                
+                // Actualizar UI
+                document.querySelectorAll('.pattern-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                this.parentElement.classList.add('active');
+                
+                // Actualizar información del patrón
+                const patternInfo = CONFIG.patterns[state.currentPattern];
+                if (patternInfo) {
+                    patternTitle.textContent = patternInfo.name;
+                    patternDesc.textContent = patternInfo.description;
+                }
+                
+                renderPattern();
+            });
+        });
+
+        scaleRange.addEventListener('input', function() {
+            state.scale = parseInt(this.value);
+            scaleValue.textContent = this.value + 'mm';
+            renderPattern();
+        });
+
+        dashRange.addEventListener('input', function() {
+            state.dashGap = parseInt(this.value);
+            dashValue.textContent = this.value + 'mm';
+            renderPattern();
+        });
+
+        strokeRange.addEventListener('input', function() {
+            state.strokeWidth = parseInt(this.value);
+            strokeValue.textContent = this.value + 'px';
+            renderPattern();
+        });
+
+
+        widthInput.addEventListener('input', function() {
+            const value = parseFloat(this.value) || 21.0;
+            state.workAreaWidth = value;
+            // Cambiar selector a "Personalizado" si se modifica manualmente
+            paperSizeSelect.value = 'custom';
+            renderPattern();
+        });
+
+        heightInput.addEventListener('input', function() {
+            const value = parseFloat(this.value) || 29.7;
+            state.workAreaHeight = value;
+            // Cambiar selector a "Personalizado" si se modifica manualmente
+            paperSizeSelect.value = 'custom';
+            renderPattern();
+        });
+
+        // Event listener para selector de tamaños predefinidos
+        paperSizeSelect.addEventListener('change', function() {
+            const selectedSize = this.value;
+            
+            if (selectedSize !== 'custom' && CONFIG.paperSizes[selectedSize]) {
+                const size = CONFIG.paperSizes[selectedSize];
+                state.workAreaWidth = size.width;
+                state.workAreaHeight = size.height;
+                
+                // Actualizar inputs manuales
+                widthInput.value = size.width;
+                heightInput.value = size.height;
+                
+                renderPattern();
+            }
+        });
+
+        // Función de descarga PDF
+        downloadBtn.addEventListener('click', function() {
+            try {
+                const { jsPDF } = window.jspdf;
+                
+                // Crear PDF con las dimensiones reales
+                const pdf = new jsPDF({
+                    orientation: state.workAreaWidth > state.workAreaHeight ? 'landscape' : 'portrait',
+                    unit: 'cm',
+                    format: [state.workAreaWidth, state.workAreaHeight]
+                });
+                
+                // Crear canvas temporal con resolución completa
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                const fullWidth = state.workAreaWidth * CONFIG.CM_TO_PX;
+                const fullHeight = state.workAreaHeight * CONFIG.CM_TO_PX;
+                
+                tempCanvas.width = fullWidth;
+                tempCanvas.height = fullHeight;
+                
+                // Renderizar patrón en resolución completa
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillRect(0, 0, fullWidth, fullHeight);
+                
+                const patternFunc = patterns[state.currentPattern];
+                if (patternFunc) {
+                    const patternSizePx = state.scale * CONFIG.MM_TO_PX;
+                    
+                    // Calcular rango expandido para PDF también
+                    const extraCols = Math.ceil(Math.abs(state.offsetX) / patternSizePx) + 2;
+                    const extraRows = Math.ceil(Math.abs(state.offsetY) / patternSizePx) + 2;
+                    
+                    const cols = Math.ceil(fullWidth / patternSizePx) + extraCols * 2;
+                    const rows = Math.ceil(fullHeight / patternSizePx) + extraRows * 2;
+                    
+                    const startCol = -extraCols;
+                    const startRow = -extraRows;
+                    
+                    for (let row = startRow; row < rows + startRow; row++) {
+                        for (let col = startCol; col < cols + startCol; col++) {
+                            let x = col * patternSizePx;
+                            let y = row * patternSizePx;
+                            
+                            if (state.currentPattern === 'seigaiha' && row % 2 === 1) {
+                                x += patternSizePx / 2;
+                            }
+                            
+                            const finalX = x + state.offsetX;
+                            const finalY = y + state.offsetY;
+                            
+                            // Solo dibujar si está dentro o cerca del área del PDF
+                            if (finalX > -patternSizePx && finalX < fullWidth + patternSizePx && 
+                                finalY > -patternSizePx && finalY < fullHeight + patternSizePx) {
+                                patternFunc(tempCtx, finalX, finalY, patternSizePx, state.strokeWidth, state.color, state.dashGap);
+                            }
+                        }
+                    }
+                }
+                
+                // Convertir canvas a imagen y agregar al PDF
+                const imgData = tempCanvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 0, 0, state.workAreaWidth, state.workAreaHeight);
+                
+                // Descargar
+                const filename = `sashiko-${state.currentPattern}-${state.workAreaWidth}x${state.workAreaHeight}cm.pdf`;
+                pdf.save(filename);
+                
+            } catch (error) {
+                alert('Error al generar PDF. Por favor, intenta nuevamente.');
+                console.error('Error PDF:', error);
+            }
+        });
+
+        // Inicializar aplicación
+        function init() {
+            renderPattern();
+        }
+
+        // Event listeners para arrastre del patrón
+        canvas.addEventListener('mousedown', function(e) {
+            dragState.isDragging = true;
+            const rect = canvas.getBoundingClientRect();
+            dragState.lastX = e.clientX - rect.left;
+            dragState.lastY = e.clientY - rect.top;
+            canvas.classList.add('dragging');
+        });
+
+        canvas.addEventListener('mousemove', function(e) {
+            if (!dragState.isDragging) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            const deltaX = currentX - dragState.lastX;
+            const deltaY = currentY - dragState.lastY;
+            
+            state.offsetX += deltaX;
+            state.offsetY += deltaY;
+            
+            dragState.lastX = currentX;
+            dragState.lastY = currentY;
+            
+            renderPattern();
+        });
+
+        canvas.addEventListener('mouseup', function() {
+            dragState.isDragging = false;
+            canvas.classList.remove('dragging');
+        });
+
+        canvas.addEventListener('mouseleave', function() {
+            dragState.isDragging = false;
+            canvas.classList.remove('dragging');
+        });
+
+        // Prevenir selección de texto al arrastrar
+        canvas.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // Cargar aplicación cuando esté lista
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
