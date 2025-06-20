@@ -694,7 +694,7 @@
                 <div class="control-group">
                     <label class="control-label">Tamaño del patrón</label>
                     <div class="range-container">
-                        <input type="range" class="range-input" id="patternSizeRange" min="5" max="50" value="40">
+                        <input type="range" class="range-input" id="patternSizeRange" min="5" max="100" value="40">
                         <span class="range-value" id="patternSizeValue">40mm</span>
                     </div>
                 </div>
@@ -1045,6 +1045,10 @@
             startY: 0,
             eraserRadius: 20,
             currentPath: [], // Para almacenar puntos del trazo actual a mano alzada
+            arcStep: 0, // Para el proceso de 3 pasos del arco: 0=centro, 1=radio, 2=ángulos
+            arcCenter: {x: 0, y: 0}, // Centro del arco en construcción
+            arcRadius: 0, // Radio del arco en construcción
+            arcStartAngle: 0, // Ángulo inicial del arco
             drawnShapes: [], // Almacena las formas dibujadas
             customPatterns: JSON.parse(localStorage.getItem('customPatterns') || '[]')
         };
@@ -1074,6 +1078,7 @@
             clearCanvasVisual();
             editorState.drawnShapes = [];
             editorState.currentPath = []; // Limpiar trazo actual también
+            editorState.arcStep = 0; // Resetear estado del arco
             updateSaveButtonState();
         }
 
@@ -1081,6 +1086,9 @@
             editorState.currentTool = tool;
             toolButtons.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
+            
+            // Resetear estado del arco al cambiar herramienta
+            editorState.arcStep = 0;
             
             // Cambiar cursor y mostrar/ocultar círculo borrador
             if (tool === 'erase') {
@@ -1161,6 +1169,27 @@
                     if (isNearPerimeter && isOutsideCircle) {
                         shouldKeep = false;
                         shapesRemoved = true;
+                    }
+                } else if (shape.type === 'arc') {
+                    // Verificar colisión con el arco
+                    // Aproximación: verificar puntos a lo largo del arco
+                    const steps = Math.max(10, Math.floor(shape.radius / 5)); // Más puntos para arcos grandes
+                    const angleStep = (shape.endAngle - shape.startAngle) / steps;
+                    
+                    for (let i = 0; i <= steps; i++) {
+                        const angle = shape.startAngle + (angleStep * i);
+                        const arcX = shape.centerX + shape.radius * Math.cos(angle);
+                        const arcY = shape.centerY + shape.radius * Math.sin(angle);
+                        
+                        const dx = x - arcX;
+                        const dy = y - arcY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance <= eraseRadius) {
+                            shouldKeep = false;
+                            shapesRemoved = true;
+                            break;
+                        }
                     }
                 } else if (shape.type === 'freehand') {
                     // Verificar colisión con cualquier segmento del trazo a mano alzada
@@ -1245,6 +1274,48 @@
             ctx.stroke();
         }
 
+        function drawArc(ctx, centerX, centerY, radius, startAngle, endAngle) {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+            ctx.stroke();
+        }
+
+        function calculateAngle(centerX, centerY, pointX, pointY) {
+            return Math.atan2(pointY - centerY, pointX - centerX);
+        }
+
+        function drawArcGuides(ctx, centerX, centerY, radius, currentX, currentY, step) {
+            ctx.save();
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            
+            if (step === 1) {
+                // Mostrar círculo guía para el radio
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Línea del centro al cursor
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            } else if (step === 2) {
+                // Mostrar círculo base y línea al cursor
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
         function addPointToCurrentPath(x, y) {
             // Optimización: solo agregar punto si está lo suficientemente lejos del anterior
             if (editorState.currentPath.length === 0) {
@@ -1280,6 +1351,8 @@
                     drawLine(editorCtx, shape.x1, shape.y1, shape.x2, shape.y2);
                 } else if (shape.type === 'circle') {
                     drawCircle(editorCtx, shape.x, shape.y, shape.radius);
+                } else if (shape.type === 'arc') {
+                    drawArc(editorCtx, shape.centerX, shape.centerY, shape.radius, shape.startAngle, shape.endAngle);
                 } else if (shape.type === 'freehand') {
                     drawFreehand(editorCtx, shape.points);
                 }
@@ -1345,6 +1418,17 @@
                             centerY + (shape.y - 150) * scale,
                             shape.radius * scale,
                             0, 2 * Math.PI
+                        );
+                        ctx.stroke();
+                    } else if (shape.type === 'arc') {
+                        ctx.beginPath();
+                        ctx.arc(
+                            centerX + (shape.centerX - 150) * scale,
+                            centerY + (shape.centerY - 150) * scale,
+                            shape.radius * scale,
+                            shape.startAngle,
+                            shape.endAngle,
+                            false
                         );
                         ctx.stroke();
                     } else if (shape.type === 'freehand') {
@@ -1422,6 +1506,17 @@
                                 centerY + (shape.y - 150) * scale,
                                 shape.radius * scale,
                                 0, 2 * Math.PI
+                            );
+                            ctx.stroke();
+                        } else if (shape.type === 'arc') {
+                            ctx.beginPath();
+                            ctx.arc(
+                                centerX + (shape.centerX - 150) * scale,
+                                centerY + (shape.centerY - 150) * scale,
+                                shape.radius * scale,
+                                shape.startAngle,
+                                shape.endAngle,
+                                false
                             );
                             ctx.stroke();
                         } else if (shape.type === 'freehand') {
@@ -1781,6 +1876,38 @@
                     editorState.isDrawing = true;
                     editorState.currentPath = [];
                     addPointToCurrentPath(pos.x, pos.y);
+                } else if (editorState.currentTool === 'arc') {
+                    // Proceso de 3 pasos para el arco
+                    if (editorState.arcStep === 0) {
+                        // Paso 1: Definir centro
+                        editorState.arcCenter = {x: pos.x, y: pos.y};
+                        editorState.arcStep = 1;
+                    } else if (editorState.arcStep === 1) {
+                        // Paso 2: Definir radio
+                        const dx = pos.x - editorState.arcCenter.x;
+                        const dy = pos.y - editorState.arcCenter.y;
+                        editorState.arcRadius = Math.sqrt(dx * dx + dy * dy);
+                        editorState.arcStartAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
+                        editorState.arcStep = 2;
+                    } else if (editorState.arcStep === 2) {
+                        // Paso 3: Definir ángulo final y crear arco
+                        const endAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
+                        
+                        if (editorState.arcRadius > 5) { // Evitar arcos muy pequeños
+                            editorState.drawnShapes.push({
+                                type: 'arc',
+                                centerX: editorState.arcCenter.x,
+                                centerY: editorState.arcCenter.y,
+                                radius: editorState.arcRadius,
+                                startAngle: editorState.arcStartAngle,
+                                endAngle: endAngle
+                            });
+                        }
+                        
+                        editorState.arcStep = 0; // Resetear para el próximo arco
+                        redrawCanvas();
+                        updateSaveButtonState();
+                    }
                 } else {
                     editorState.isDrawing = true;
                     editorState.startX = pos.x;
@@ -1797,6 +1924,30 @@
                     // Borrar mientras se arrastra
                     if (editorState.isErasing) {
                         eraseAtPosition(pos.x, pos.y);
+                    }
+                } else if (editorState.currentTool === 'arc') {
+                    // Preview del arco en construcción
+                    if (editorState.arcStep > 0) {
+                        redrawCanvas();
+                        
+                        if (editorState.arcStep === 1) {
+                            // Mostrar guías para definir radio
+                            const dx = pos.x - editorState.arcCenter.x;
+                            const dy = pos.y - editorState.arcCenter.y;
+                            const tempRadius = Math.sqrt(dx * dx + dy * dy);
+                            drawArcGuides(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, tempRadius, pos.x, pos.y, 1);
+                        } else if (editorState.arcStep === 2) {
+                            // Mostrar preview del arco final
+                            const endAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
+                            drawArcGuides(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, editorState.arcRadius, pos.x, pos.y, 2);
+                            
+                            // Preview del arco final
+                            editorCtx.strokeStyle = '#1e1b4b';
+                            editorCtx.lineWidth = 2;
+                            editorCtx.setLineDash([2, 2]);
+                            drawArc(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, editorState.arcRadius, editorState.arcStartAngle, endAngle);
+                            editorCtx.setLineDash([]);
+                        }
                     }
                 } else {
                     hideEraserCircle();
@@ -1900,6 +2051,12 @@
                     updateSaveButtonState();
                 }
                 
+                // Resetear estado del arco si se sale del canvas
+                if (editorState.currentTool === 'arc') {
+                    editorState.arcStep = 0;
+                    redrawCanvas();
+                }
+                
                 editorState.isDrawing = false;
                 editorState.isErasing = false;
             });
@@ -1985,6 +2142,7 @@
                 <div class="editor-tools">
                     <button class="tool-btn active" id="lineTool" data-tool="line">📏 Línea</button>
                     <button class="tool-btn" id="circleTool" data-tool="circle">⭕ Círculo</button>
+                    <button class="tool-btn" id="arcTool" data-tool="arc">🌙 Arco</button>
                     <button class="tool-btn" id="freehandTool" data-tool="freehand">✏️ Lápiz</button>
                     <button class="tool-btn" id="eraseTool" data-tool="erase">🧽 Borrar</button>
                     <button class="tool-btn" id="clearTool" data-tool="clear">🗑️ Limpiar</button>
