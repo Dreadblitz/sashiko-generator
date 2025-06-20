@@ -1044,6 +1044,7 @@
             startX: 0,
             startY: 0,
             eraserRadius: 20,
+            currentPath: [], // Para almacenar puntos del trazo actual a mano alzada
             drawnShapes: [], // Almacena las formas dibujadas
             customPatterns: JSON.parse(localStorage.getItem('customPatterns') || '[]')
         };
@@ -1072,6 +1073,7 @@
             // Limpiar completamente (canvas + formas guardadas)
             clearCanvasVisual();
             editorState.drawnShapes = [];
+            editorState.currentPath = []; // Limpiar trazo actual también
             updateSaveButtonState();
         }
 
@@ -1160,6 +1162,44 @@
                         shouldKeep = false;
                         shapesRemoved = true;
                     }
+                } else if (shape.type === 'freehand') {
+                    // Verificar colisión con cualquier segmento del trazo a mano alzada
+                    for (let i = 0; i < shape.points.length - 1; i++) {
+                        const p1 = shape.points[i];
+                        const p2 = shape.points[i + 1];
+                        
+                        // Calcular distancia del punto del borrador al segmento de línea
+                        const A = x - p1.x;
+                        const B = y - p1.y;
+                        const C = p2.x - p1.x;
+                        const D = p2.y - p1.y;
+                        
+                        const dot = A * C + B * D;
+                        const lenSq = C * C + D * D;
+                        const param = lenSq !== 0 ? dot / lenSq : -1;
+                        
+                        let xx, yy;
+                        if (param < 0) {
+                            xx = p1.x;
+                            yy = p1.y;
+                        } else if (param > 1) {
+                            xx = p2.x;
+                            yy = p2.y;
+                        } else {
+                            xx = p1.x + param * C;
+                            yy = p1.y + param * D;
+                        }
+                        
+                        const dx = x - xx;
+                        const dy = y - yy;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance <= eraseRadius) {
+                            shouldKeep = false;
+                            shapesRemoved = true;
+                            break; // Salir del loop si encontramos colisión
+                        }
+                    }
                 }
                 
                 return shouldKeep;
@@ -1192,6 +1232,35 @@
             ctx.stroke();
         }
 
+        function drawFreehand(ctx, points) {
+            if (points.length < 2) return;
+            
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            
+            ctx.stroke();
+        }
+
+        function addPointToCurrentPath(x, y) {
+            // Optimización: solo agregar punto si está lo suficientemente lejos del anterior
+            if (editorState.currentPath.length === 0) {
+                editorState.currentPath.push({x, y});
+                return;
+            }
+            
+            const lastPoint = editorState.currentPath[editorState.currentPath.length - 1];
+            const distance = Math.sqrt(Math.pow(x - lastPoint.x, 2) + Math.pow(y - lastPoint.y, 2));
+            
+            // Solo agregar si la distancia es mayor a 2 píxeles para optimizar
+            if (distance > 2) {
+                editorState.currentPath.push({x, y});
+            }
+        }
+
         function updateSaveButtonState() {
             const patternNameInput = document.getElementById('patternNameInput');
             const hasDrawing = editorState.drawnShapes.length > 0;
@@ -1211,6 +1280,8 @@
                     drawLine(editorCtx, shape.x1, shape.y1, shape.x2, shape.y2);
                 } else if (shape.type === 'circle') {
                     drawCircle(editorCtx, shape.x, shape.y, shape.radius);
+                } else if (shape.type === 'freehand') {
+                    drawFreehand(editorCtx, shape.points);
                 }
             });
             updateSaveButtonState();
@@ -1276,6 +1347,24 @@
                             0, 2 * Math.PI
                         );
                         ctx.stroke();
+                    } else if (shape.type === 'freehand') {
+                        if (shape.points.length > 1) {
+                            ctx.beginPath();
+                            const firstPoint = shape.points[0];
+                            ctx.moveTo(
+                                centerX + (firstPoint.x - 150) * scale,
+                                centerY + (firstPoint.y - 150) * scale
+                            );
+                            
+                            for (let i = 1; i < shape.points.length; i++) {
+                                const point = shape.points[i];
+                                ctx.lineTo(
+                                    centerX + (point.x - 150) * scale,
+                                    centerY + (point.y - 150) * scale
+                                );
+                            }
+                            ctx.stroke();
+                        }
                     }
                 });
                 
@@ -1335,6 +1424,24 @@
                                 0, 2 * Math.PI
                             );
                             ctx.stroke();
+                        } else if (shape.type === 'freehand') {
+                            if (shape.points.length > 1) {
+                                ctx.beginPath();
+                                const firstPoint = shape.points[0];
+                                ctx.moveTo(
+                                    centerX + (firstPoint.x - 150) * scale,
+                                    centerY + (firstPoint.y - 150) * scale
+                                );
+                                
+                                for (let i = 1; i < shape.points.length; i++) {
+                                    const point = shape.points[i];
+                                    ctx.lineTo(
+                                        centerX + (point.x - 150) * scale,
+                                        centerY + (point.y - 150) * scale
+                                    );
+                                }
+                                ctx.stroke();
+                            }
                         }
                     });
                     
@@ -1670,6 +1777,10 @@
                 if (editorState.currentTool === 'erase') {
                     editorState.isErasing = true;
                     eraseAtPosition(pos.x, pos.y);
+                } else if (editorState.currentTool === 'freehand') {
+                    editorState.isDrawing = true;
+                    editorState.currentPath = [];
+                    addPointToCurrentPath(pos.x, pos.y);
                 } else {
                     editorState.isDrawing = true;
                     editorState.startX = pos.x;
@@ -1692,22 +1803,31 @@
                     
                     // Preview temporal mientras se dibuja
                     if (editorState.isDrawing) {
-                        redrawCanvas();
-                        editorCtx.strokeStyle = '#1e1b4b';
-                        editorCtx.lineWidth = 2;
-                        editorCtx.setLineDash([2, 2]); // Línea punteada para preview
-                        
-                        if (editorState.currentTool === 'line') {
-                            drawLine(editorCtx, editorState.startX, editorState.startY, pos.x, pos.y);
-                        } else if (editorState.currentTool === 'circle') {
-                            const radius = Math.sqrt(
-                                Math.pow(pos.x - editorState.startX, 2) + 
-                                Math.pow(pos.y - editorState.startY, 2)
-                            );
-                            drawCircle(editorCtx, editorState.startX, editorState.startY, radius);
+                        if (editorState.currentTool === 'freehand') {
+                            // Dibujo a mano alzada en tiempo real
+                            addPointToCurrentPath(pos.x, pos.y);
+                            redrawCanvas();
+                            editorCtx.strokeStyle = '#1e1b4b';
+                            editorCtx.lineWidth = 2;
+                            drawFreehand(editorCtx, editorState.currentPath);
+                        } else {
+                            redrawCanvas();
+                            editorCtx.strokeStyle = '#1e1b4b';
+                            editorCtx.lineWidth = 2;
+                            editorCtx.setLineDash([2, 2]); // Línea punteada para preview
+                            
+                            if (editorState.currentTool === 'line') {
+                                drawLine(editorCtx, editorState.startX, editorState.startY, pos.x, pos.y);
+                            } else if (editorState.currentTool === 'circle') {
+                                const radius = Math.sqrt(
+                                    Math.pow(pos.x - editorState.startX, 2) + 
+                                    Math.pow(pos.y - editorState.startY, 2)
+                                );
+                                drawCircle(editorCtx, editorState.startX, editorState.startY, radius);
+                            }
+                            
+                            editorCtx.setLineDash([]); // Restaurar línea sólida
                         }
-                        
-                        editorCtx.setLineDash([]); // Restaurar línea sólida
                     }
                 }
             });
@@ -1741,6 +1861,16 @@
                                 radius: radius
                             });
                         }
+                    } else if (editorState.currentTool === 'freehand') {
+                        // Finalizar y guardar trazo a mano alzada
+                        addPointToCurrentPath(pos.x, pos.y);
+                        if (editorState.currentPath.length > 1) { // Evitar trazos muy cortos
+                            editorState.drawnShapes.push({
+                                type: 'freehand',
+                                points: [...editorState.currentPath]
+                            });
+                        }
+                        editorState.currentPath = []; // Limpiar trazo actual
                     }
                     
                     redrawCanvas();
@@ -1758,6 +1888,18 @@
 
             patternEditorCanvas.addEventListener('mouseleave', function() {
                 hideEraserCircle();
+                
+                // Si estaba dibujando a mano alzada, finalizar el trazo
+                if (editorState.isDrawing && editorState.currentTool === 'freehand' && editorState.currentPath.length > 1) {
+                    editorState.drawnShapes.push({
+                        type: 'freehand',
+                        points: [...editorState.currentPath]
+                    });
+                    editorState.currentPath = [];
+                    redrawCanvas();
+                    updateSaveButtonState();
+                }
+                
                 editorState.isDrawing = false;
                 editorState.isErasing = false;
             });
@@ -1843,6 +1985,7 @@
                 <div class="editor-tools">
                     <button class="tool-btn active" id="lineTool" data-tool="line">📏 Línea</button>
                     <button class="tool-btn" id="circleTool" data-tool="circle">⭕ Círculo</button>
+                    <button class="tool-btn" id="freehandTool" data-tool="freehand">✏️ Lápiz</button>
                     <button class="tool-btn" id="eraseTool" data-tool="erase">🧽 Borrar</button>
                     <button class="tool-btn" id="clearTool" data-tool="clear">🗑️ Limpiar</button>
                 </div>
