@@ -104,7 +104,7 @@
         }
 
         .panel-section {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .panel-section:last-child {
@@ -112,10 +112,10 @@
         }
 
         .section-title {
-            font-size: 1rem;
+            font-size: 1.125rem;
             font-weight: 600;
             color: var(--gray-900);
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -151,13 +151,13 @@
 
         .create-pattern-btn {
             width: 100%;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
+            margin-top: 0.75rem;
+            padding: 0.75rem;
             background: var(--gray-100);
             color: var(--gray-700);
             border: 1px solid var(--gray-300);
             border-radius: var(--radius-sm);
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -185,26 +185,15 @@
 
         /* Controles de personalización */
         .control-group {
-            margin-bottom: 1rem;
-        }
-        
-        .control-group-compact {
-            margin-bottom: 0.6rem;
-        }
-        
-        .control-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .control-label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--gray-700);
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
         }
 
         .control-input {
@@ -275,7 +264,7 @@
         }
 
         .range-value {
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 500;
             color: var(--gray-700);
             min-width: 3rem;
@@ -688,21 +677,6 @@
                         <option value="shippo">Shippo</option>
                         <option value="yabane">Yabane</option>
                         <option value="uroko">Uroko</option>
-                        <option value="tsunagi">Tsunagi</option>
-                        <option value="gindama">Gindama</option>
-                        <option value="nowaki">Nowaki</option>
-                        <option value="bishamon">Bishamon</option>
-                        <option value="kanoko">Kanoko</option>
-                        <option value="yamaji">Yamaji</option>
-                        <option value="sayagata">Sayagata</option>
-                        <option value="kumo">Kumo</option>
-                        <option value="takanoha">Takanoha</option>
-                        <option value="hishi">Hishi</option>
-                        <option value="jigzag">Jigzag</option>
-                        <option value="moyozashi">Moyozashi</option>
-                        <option value="gofun">Gofun</option>
-                        <option value="hitomezashi">Hitomezashi</option>
-                        <option value="kogin">Kogin</option>
                     </select>
                     <button class="create-pattern-btn" id="createPatternBtn">
                         ✏️ Dibujar Patrón
@@ -717,15 +691,15 @@
             <section class="panel-section">
                 <h3 class="section-title">⚙️ Personalización</h3>
                 
-                <div class="control-group-compact">
+                <div class="control-group">
                     <label class="control-label">Tamaño del patrón</label>
                     <div class="range-container">
-                        <input type="range" class="range-input" id="patternSizeRange" min="5" max="100" value="40">
+                        <input type="range" class="range-input" id="patternSizeRange" min="5" max="50" value="40">
                         <span class="range-value" id="patternSizeValue">40mm</span>
                     </div>
                 </div>
 
-                <div class="control-group-compact">
+                <div class="control-group">
                     <label class="control-label">Espaciado horizontal</label>
                     <div class="range-container">
                         <input type="range" class="range-input" id="spacingXRange" min="5" max="75" value="55">
@@ -733,7 +707,7 @@
                     </div>
                 </div>
 
-                <div class="control-group-compact">
+                <div class="control-group">
                     <label class="control-label">Espaciado vertical</label>
                     <div class="range-container">
                         <input type="range" class="range-input" id="spacingYRange" min="5" max="75" value="40">
@@ -741,7 +715,7 @@
                     </div>
                 </div>
 
-                <div class="control-group-compact">
+                <div class="control-group">
                     <label class="control-label">Grosor de línea</label>
                     <div class="range-container">
                         <input type="range" class="range-input" id="strokeRange" min="0.1" max="3" step="0.1" value="1.0">
@@ -749,25 +723,11 @@
                     </div>
                 </div>
 
-                <div class="control-group-compact">
+                <div class="control-group">
                     <label class="control-label">Separación de línea</label>
                     <div class="range-container">
                         <input type="range" class="range-input" id="dashRange" min="0.1" max="10" step="0.1" value="2.0">
                         <span class="range-value" id="dashValue">2.0mm</span>
-                    </div>
-                </div>
-
-                <div class="control-group-compact">
-                    <label class="control-label">Rotación</label>
-                    <div class="range-container">
-                        <input type="range" class="range-input" id="rotationRange" min="0" max="360" step="1" value="0">
-                        <span class="range-value" id="rotationValue">0°</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-top: 0.4rem;">
-                        <button class="tool-btn" id="rotate0" style="padding: 0.35rem; font-size: 0.75rem;">0°</button>
-                        <button class="tool-btn" id="rotate45" style="padding: 0.35rem; font-size: 0.75rem;">45°</button>
-                        <button class="tool-btn" id="rotate90" style="padding: 0.35rem; font-size: 0.75rem;">90°</button>
-                        <button class="tool-btn" id="rotate180" style="padding: 0.35rem; font-size: 0.75rem;">180°</button>
                     </div>
                 </div>
 
@@ -859,66 +819,6 @@
                 uroko: {
                     name: 'Uroko',
                     description: 'Escamas de dragón triangulares'
-                },
-                tsunagi: {
-                    name: 'Tsunagi',
-                    description: 'Cadenas entrelazadas continuas'
-                },
-                gindama: {
-                    name: 'Gindama',
-                    description: 'Círculos de plata repetidos'
-                },
-                nowaki: {
-                    name: 'Nowaki',
-                    description: 'Viento de otoño con líneas curvadas'
-                },
-                bishamon: {
-                    name: 'Bishamon',
-                    description: 'Armadura del dios guerrero'
-                },
-                kanoko: {
-                    name: 'Kanoko',
-                    description: 'Patrón de puntos de cervatillo'
-                },
-                yamaji: {
-                    name: 'Yamaji',
-                    description: 'Senderos de montaña zigzagueantes'
-                },
-                sayagata: {
-                    name: 'Sayagata',
-                    description: 'Esvásticas entrelazadas de la eternidad'
-                },
-                kumo: {
-                    name: 'Kumo',
-                    description: 'Telaraña geométrica'
-                },
-                takanoha: {
-                    name: 'Takanoha',
-                    description: 'Plumas de halcón en V'
-                },
-                hishi: {
-                    name: 'Hishi',
-                    description: 'Rombos diamantados clásicos'
-                },
-                jigzag: {
-                    name: 'Jigzag',
-                    description: 'Líneas quebradas en zigzag'
-                },
-                moyozashi: {
-                    name: 'Moyozashi',
-                    description: 'Puntadas decorativas libres'
-                },
-                gofun: {
-                    name: 'Gofun',
-                    description: 'Cinco partes equilibradas'
-                },
-                hitomezashi: {
-                    name: 'Hitomezashi',
-                    description: 'Una puntada corriente simple'
-                },
-                kogin: {
-                    name: 'Kogin',
-                    description: 'Patrones geométricos de Kogin-zashi'
                 }
             }
         };
@@ -935,8 +835,7 @@
             workAreaWidth: 21.0, // A4 width
             workAreaHeight: 29.7, // A4 height
             offsetX: 0, // Desplazamiento horizontal del patrón
-            offsetY: 0,  // Desplazamiento vertical del patrón
-            rotation: 0  // Rotación del patrón en grados
+            offsetY: 0  // Desplazamiento vertical del patrón
         };
 
         // Estado del arrastre
@@ -960,8 +859,6 @@
         const strokeValue = document.getElementById('strokeValue');
         const dashRange = document.getElementById('dashRange');
         const dashValue = document.getElementById('dashValue');
-        const rotationRange = document.getElementById('rotationRange');
-        const rotationValue = document.getElementById('rotationValue');
         const paperSizeSelect = document.getElementById('paperSizeSelect');
         const widthInput = document.getElementById('widthInput');
         const heightInput = document.getElementById('heightInput');
@@ -1019,23 +916,23 @@
             },
 
             seigaiha: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                    ctx.strokeStyle = color;
-                    ctx.lineWidth = strokeWidth;
-                    
-                    // Configurar líneas segmentadas
-                    const dashLength = dashGap * CONFIG.MM_TO_PX;
-                    ctx.setLineDash([dashLength, dashLength]);
-                    
-                    const radius = size / 2;
-                    const numArcs = 3;
-                    
-                    for (let i = 0; i < numArcs; i++) {
-                        ctx.beginPath();
-                        const currentRadius = radius * (1 - i * 0.3);
-                        ctx.arc(x, y + radius, currentRadius, Math.PI, 0, false);
-                        ctx.stroke();
-                    }
-                    
+                ctx.strokeStyle = color;
+                ctx.lineWidth = strokeWidth;
+                
+                // Configurar líneas segmentadas
+                const dashLength = dashGap * CONFIG.MM_TO_PX;
+                ctx.setLineDash([dashLength, dashLength]);
+                
+                const radius = size / 2;
+                const numArcs = 3;
+                
+                for (let i = 0; i < numArcs; i++) {
+                    ctx.beginPath();
+                    const currentRadius = radius * (1 - i * 0.3);
+                    ctx.arc(x, y + radius, currentRadius, Math.PI, 0, false);
+                    ctx.stroke();
+                }
+                
                 // Restaurar líneas sólidas
                 ctx.setLineDash([]);
             },
@@ -1136,499 +1033,6 @@
                 
                 // Restaurar líneas sólidas
                 ctx.setLineDash([]);
-            },
-
-            tsunagi: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const linkSize = halfSize * 0.7;
-                
-                ctx.beginPath();
-                
-                // Eslabones horizontales
-                ctx.moveTo(x - halfSize, y - linkSize/2);
-                ctx.lineTo(x - linkSize/2, y - linkSize/2);
-                ctx.lineTo(x - linkSize/2, y + linkSize/2);
-                ctx.lineTo(x - halfSize, y + linkSize/2);
-                
-                ctx.moveTo(x + linkSize/2, y - linkSize/2);
-                ctx.lineTo(x + halfSize, y - linkSize/2);
-                ctx.lineTo(x + halfSize, y + linkSize/2);
-                ctx.lineTo(x + linkSize/2, y + linkSize/2);
-                
-                // Eslabones verticales
-                ctx.moveTo(x - linkSize/2, y - halfSize);
-                ctx.lineTo(x + linkSize/2, y - halfSize);
-                ctx.lineTo(x + linkSize/2, y - linkSize/2);
-                ctx.lineTo(x - linkSize/2, y - linkSize/2);
-                
-                ctx.moveTo(x - linkSize/2, y + linkSize/2);
-                ctx.lineTo(x + linkSize/2, y + linkSize/2);
-                ctx.lineTo(x + linkSize/2, y + halfSize);
-                ctx.lineTo(x - linkSize/2, y + halfSize);
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            gindama: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const radius = size * 0.3;
-                
-                // Círculo principal
-                ctx.beginPath();
-                ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-                
-                // Círculos pequeños alrededor
-                const smallRadius = radius * 0.3;
-                for (let i = 0; i < 8; i++) {
-                    const angle = (i * Math.PI) / 4;
-                    const cx = x + (radius * 1.5) * Math.cos(angle);
-                    const cy = y + (radius * 1.5) * Math.sin(angle);
-                    
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, smallRadius, 0, 2 * Math.PI);
-                    ctx.stroke();
-                }
-                
-                ctx.setLineDash([]);
-            },
-
-            nowaki: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                
-                ctx.beginPath();
-                
-                // Líneas curvadas representando viento
-                for (let i = 0; i < 3; i++) {
-                    const offsetY = (i - 1) * halfSize * 0.6;
-                    const curve = halfSize * 0.3;
-                    
-                    ctx.moveTo(x - halfSize, y + offsetY);
-                    ctx.quadraticCurveTo(x - curve, y + offsetY - curve, x, y + offsetY);
-                    ctx.quadraticCurveTo(x + curve, y + offsetY + curve, x + halfSize, y + offsetY);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            bishamon: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const step = halfSize / 3;
-                
-                ctx.beginPath();
-                
-                // Patrón de armadura en chevron
-                for (let i = 0; i < 3; i++) {
-                    const y1 = y - halfSize + (i * step * 2);
-                    const y2 = y1 + step;
-                    
-                    // Línea izquierda
-                    ctx.moveTo(x - halfSize, y1);
-                    ctx.lineTo(x, y2);
-                    // Línea derecha
-                    ctx.lineTo(x + halfSize, y1);
-                    
-                    // Línea horizontal superior
-                    if (i > 0) {
-                        ctx.moveTo(x - halfSize, y1);
-                        ctx.lineTo(x + halfSize, y1);
-                    }
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            kanoko: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const dotRadius = strokeWidth * 2;
-                const spacing = size / 5;
-                
-                ctx.beginPath();
-                
-                // Patrón de puntos en cuadrícula
-                for (let i = -2; i <= 2; i++) {
-                    for (let j = -2; j <= 2; j++) {
-                        const dotX = x + i * spacing;
-                        const dotY = y + j * spacing;
-                        
-                        // Alternar patrón
-                        if ((i + j) % 2 === 0) {
-                            ctx.moveTo(dotX + dotRadius, dotY);
-                            ctx.arc(dotX, dotY, dotRadius, 0, 2 * Math.PI);
-                        }
-                    }
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            yamaji: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const zigWidth = halfSize / 3;
-                
-                ctx.beginPath();
-                
-                // Zigzag horizontal
-                ctx.moveTo(x - halfSize, y - zigWidth);
-                ctx.lineTo(x - zigWidth, y);
-                ctx.lineTo(x, y - zigWidth);
-                ctx.lineTo(x + zigWidth, y);
-                ctx.lineTo(x + halfSize, y - zigWidth);
-                
-                // Zigzag vertical
-                ctx.moveTo(x - zigWidth, y - halfSize);
-                ctx.lineTo(x, y - zigWidth);
-                ctx.lineTo(x - zigWidth, y);
-                ctx.lineTo(x, y + zigWidth);
-                ctx.lineTo(x - zigWidth, y + halfSize);
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            sayagata: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const step = halfSize / 2;
-                
-                ctx.beginPath();
-                
-                // Esvástica tradicional (símbolo de eternidad)
-                // Líneas horizontales
-                ctx.moveTo(x - step, y - step);
-                ctx.lineTo(x + step, y - step);
-                ctx.moveTo(x - step, y + step);
-                ctx.lineTo(x + step, y + step);
-                
-                // Líneas verticales
-                ctx.moveTo(x - step, y - step);
-                ctx.lineTo(x - step, y + step);
-                ctx.moveTo(x + step, y - step);
-                ctx.lineTo(x + step, y + step);
-                
-                // Extremos en L
-                ctx.moveTo(x + step, y - step);
-                ctx.lineTo(x + step, y - step/2);
-                ctx.moveTo(x - step, y - step);
-                ctx.lineTo(x - step/2, y - step);
-                
-                ctx.moveTo(x - step, y + step);
-                ctx.lineTo(x - step, y + step/2);
-                ctx.moveTo(x + step, y + step);
-                ctx.lineTo(x + step/2, y + step);
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            kumo: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                
-                ctx.beginPath();
-                
-                // Telaraña radial
-                for (let i = 0; i < 8; i++) {
-                    const angle = (i * Math.PI) / 4;
-                    const endX = x + halfSize * Math.cos(angle);
-                    const endY = y + halfSize * Math.sin(angle);
-                    
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(endX, endY);
-                }
-                
-                // Círculos concéntricos
-                for (let r = 1; r <= 3; r++) {
-                    const radius = (halfSize / 3) * r;
-                    ctx.moveTo(x + radius, y);
-                    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            takanoha: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const vWidth = halfSize * 0.6;
-                
-                ctx.beginPath();
-                
-                // Plumas en V múltiples
-                for (let i = 0; i < 3; i++) {
-                    const yOffset = (i - 1) * halfSize * 0.4;
-                    const scale = 1 - i * 0.15;
-                    
-                    // V izquierda
-                    ctx.moveTo(x - halfSize * scale, y - vWidth * scale + yOffset);
-                    ctx.lineTo(x, y + yOffset);
-                    // V derecha
-                    ctx.lineTo(x + halfSize * scale, y - vWidth * scale + yOffset);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            hishi: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                
-                ctx.beginPath();
-                
-                // Rombo principal
-                ctx.moveTo(x, y - halfSize);
-                ctx.lineTo(x + halfSize, y);
-                ctx.lineTo(x, y + halfSize);
-                ctx.lineTo(x - halfSize, y);
-                ctx.closePath();
-                
-                // Rombo interior
-                const innerSize = halfSize * 0.5;
-                ctx.moveTo(x, y - innerSize);
-                ctx.lineTo(x + innerSize, y);
-                ctx.lineTo(x, y + innerSize);
-                ctx.lineTo(x - innerSize, y);
-                ctx.closePath();
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            jigzag: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const step = halfSize / 4;
-                
-                ctx.beginPath();
-                
-                // Zigzag horizontal
-                let currentX = x - halfSize;
-                let currentY = y;
-                ctx.moveTo(currentX, currentY);
-                
-                for (let i = 0; i < 8; i++) {
-                    currentX += step;
-                    currentY = y + (i % 2 === 0 ? halfSize/2 : -halfSize/2);
-                    ctx.lineTo(currentX, currentY);
-                }
-                
-                // Zigzag vertical
-                currentX = x;
-                currentY = y - halfSize;
-                ctx.moveTo(currentX, currentY);
-                
-                for (let i = 0; i < 8; i++) {
-                    currentY += step;
-                    currentX = x + (i % 2 === 0 ? halfSize/2 : -halfSize/2);
-                    ctx.lineTo(currentX, currentY);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            moyozashi: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                
-                ctx.beginPath();
-                
-                // Patrón decorativo libre con curvas
-                ctx.moveTo(x - halfSize, y);
-                ctx.quadraticCurveTo(x - halfSize/2, y - halfSize, x, y);
-                ctx.quadraticCurveTo(x + halfSize/2, y + halfSize, x + halfSize, y);
-                
-                // Líneas decorativas cruzadas
-                ctx.moveTo(x - halfSize/2, y - halfSize/2);
-                ctx.lineTo(x + halfSize/2, y + halfSize/2);
-                ctx.moveTo(x + halfSize/2, y - halfSize/2);
-                ctx.lineTo(x - halfSize/2, y + halfSize/2);
-                
-                // Pequeños círculos decorativos
-                const dotSize = strokeWidth;
-                ctx.moveTo(x - halfSize/2 + dotSize, y - halfSize/2);
-                ctx.arc(x - halfSize/2, y - halfSize/2, dotSize, 0, 2 * Math.PI);
-                ctx.moveTo(x + halfSize/2 + dotSize, y + halfSize/2);
-                ctx.arc(x + halfSize/2, y + halfSize/2, dotSize, 0, 2 * Math.PI);
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            gofun: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const fifth = size / 5;
-                
-                ctx.beginPath();
-                
-                // Cinco partes equilibradas
-                for (let i = 0; i < 5; i++) {
-                    const angle = (i * 2 * Math.PI) / 5;
-                    const startX = x + (size * 0.2) * Math.cos(angle);
-                    const startY = y + (size * 0.2) * Math.sin(angle);
-                    const endX = x + (size * 0.4) * Math.cos(angle);
-                    const endY = y + (size * 0.4) * Math.sin(angle);
-                    
-                    ctx.moveTo(startX, startY);
-                    ctx.lineTo(endX, endY);
-                }
-                
-                // Pentágono central
-                ctx.moveTo(x + fifth, y);
-                for (let i = 1; i <= 5; i++) {
-                    const angle = (i * 2 * Math.PI) / 5;
-                    const px = x + fifth * Math.cos(angle);
-                    const py = y + fifth * Math.sin(angle);
-                    ctx.lineTo(px, py);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            hitomezashi: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX * 0.5; // Puntadas más cortas
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const step = halfSize / 4;
-                
-                ctx.beginPath();
-                
-                // Líneas horizontales simples
-                for (let i = -2; i <= 2; i++) {
-                    const yPos = y + i * step;
-                    ctx.moveTo(x - halfSize, yPos);
-                    ctx.lineTo(x + halfSize, yPos);
-                }
-                
-                // Líneas verticales alternadas
-                for (let i = -1; i <= 1; i += 2) {
-                    const xPos = x + i * step * 1.5;
-                    ctx.moveTo(xPos, y - halfSize);
-                    ctx.lineTo(xPos, y + halfSize);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            },
-
-            kogin: function(ctx, x, y, size, strokeWidth, color, dashGap) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = strokeWidth;
-                
-                const dashLength = dashGap * CONFIG.MM_TO_PX;
-                ctx.setLineDash([dashLength, dashLength]);
-                
-                const halfSize = size / 2;
-                const step = halfSize / 3;
-                
-                ctx.beginPath();
-                
-                // Patrón geométrico de Kogin-zashi
-                // Base horizontal
-                ctx.moveTo(x - halfSize, y);
-                ctx.lineTo(x + halfSize, y);
-                
-                // Patrones verticales entrelazados
-                for (let i = -1; i <= 1; i++) {
-                    const xPos = x + i * step;
-                    
-                    // Líneas verticales cortas
-                    ctx.moveTo(xPos, y - step);
-                    ctx.lineTo(xPos, y - step/2);
-                    ctx.moveTo(xPos, y + step/2);
-                    ctx.lineTo(xPos, y + step);
-                    
-                    // Conectores diagonales
-                    if (i < 1) {
-                        ctx.moveTo(xPos, y - step/2);
-                        ctx.lineTo(xPos + step, y);
-                        ctx.moveTo(xPos, y + step/2);
-                        ctx.lineTo(xPos + step, y);
-                    }
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
             }
         };
 
@@ -1640,11 +1044,6 @@
             startX: 0,
             startY: 0,
             eraserRadius: 20,
-            currentPath: [], // Para almacenar puntos del trazo actual a mano alzada
-            arcStep: 0, // Para el proceso de 3 pasos del arco: 0=centro, 1=radio, 2=ángulos
-            arcCenter: {x: 0, y: 0}, // Centro del arco en construcción
-            arcRadius: 0, // Radio del arco en construcción
-            arcStartAngle: 0, // Ángulo inicial del arco
             drawnShapes: [], // Almacena las formas dibujadas
             customPatterns: JSON.parse(localStorage.getItem('customPatterns') || '[]')
         };
@@ -1673,8 +1072,6 @@
             // Limpiar completamente (canvas + formas guardadas)
             clearCanvasVisual();
             editorState.drawnShapes = [];
-            editorState.currentPath = []; // Limpiar trazo actual también
-            editorState.arcStep = 0; // Resetear estado del arco
             updateSaveButtonState();
         }
 
@@ -1682,9 +1079,6 @@
             editorState.currentTool = tool;
             toolButtons.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-tool="${tool}"]`).classList.add('active');
-            
-            // Resetear estado del arco al cambiar herramienta
-            editorState.arcStep = 0;
             
             // Cambiar cursor y mostrar/ocultar círculo borrador
             if (tool === 'erase') {
@@ -1766,65 +1160,6 @@
                         shouldKeep = false;
                         shapesRemoved = true;
                     }
-                } else if (shape.type === 'arc') {
-                    // Verificar colisión con el arco
-                    // Aproximación: verificar puntos a lo largo del arco
-                    const steps = Math.max(10, Math.floor(shape.radius / 5)); // Más puntos para arcos grandes
-                    const angleStep = (shape.endAngle - shape.startAngle) / steps;
-                    
-                    for (let i = 0; i <= steps; i++) {
-                        const angle = shape.startAngle + (angleStep * i);
-                        const arcX = shape.centerX + shape.radius * Math.cos(angle);
-                        const arcY = shape.centerY + shape.radius * Math.sin(angle);
-                        
-                        const dx = x - arcX;
-                        const dy = y - arcY;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance <= eraseRadius) {
-                            shouldKeep = false;
-                            shapesRemoved = true;
-                            break;
-                        }
-                    }
-                } else if (shape.type === 'freehand') {
-                    // Verificar colisión con cualquier segmento del trazo a mano alzada
-                    for (let i = 0; i < shape.points.length - 1; i++) {
-                        const p1 = shape.points[i];
-                        const p2 = shape.points[i + 1];
-                        
-                        // Calcular distancia del punto del borrador al segmento de línea
-                        const A = x - p1.x;
-                        const B = y - p1.y;
-                        const C = p2.x - p1.x;
-                        const D = p2.y - p1.y;
-                        
-                        const dot = A * C + B * D;
-                        const lenSq = C * C + D * D;
-                        const param = lenSq !== 0 ? dot / lenSq : -1;
-                        
-                        let xx, yy;
-                        if (param < 0) {
-                            xx = p1.x;
-                            yy = p1.y;
-                        } else if (param > 1) {
-                            xx = p2.x;
-                            yy = p2.y;
-                        } else {
-                            xx = p1.x + param * C;
-                            yy = p1.y + param * D;
-                        }
-                        
-                        const dx = x - xx;
-                        const dy = y - yy;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        if (distance <= eraseRadius) {
-                            shouldKeep = false;
-                            shapesRemoved = true;
-                            break; // Salir del loop si encontramos colisión
-                        }
-                    }
                 }
                 
                 return shouldKeep;
@@ -1857,77 +1192,6 @@
             ctx.stroke();
         }
 
-        function drawFreehand(ctx, points) {
-            if (points.length < 2) return;
-            
-            ctx.beginPath();
-            ctx.moveTo(points[0].x, points[0].y);
-            
-            for (let i = 1; i < points.length; i++) {
-                ctx.lineTo(points[i].x, points[i].y);
-            }
-            
-            ctx.stroke();
-        }
-
-        function drawArc(ctx, centerX, centerY, radius, startAngle, endAngle) {
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
-            ctx.stroke();
-        }
-
-        function calculateAngle(centerX, centerY, pointX, pointY) {
-            return Math.atan2(pointY - centerY, pointX - centerX);
-        }
-
-        function drawArcGuides(ctx, centerX, centerY, radius, currentX, currentY, step) {
-            ctx.save();
-            ctx.strokeStyle = '#999';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([3, 3]);
-            
-            if (step === 1) {
-                // Mostrar círculo guía para el radio
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-                
-                // Línea del centro al cursor
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            } else if (step === 2) {
-                // Mostrar círculo base y línea al cursor
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(currentX, currentY);
-                ctx.stroke();
-            }
-            
-            ctx.restore();
-        }
-
-        function addPointToCurrentPath(x, y) {
-            // Optimización: solo agregar punto si está lo suficientemente lejos del anterior
-            if (editorState.currentPath.length === 0) {
-                editorState.currentPath.push({x, y});
-                return;
-            }
-            
-            const lastPoint = editorState.currentPath[editorState.currentPath.length - 1];
-            const distance = Math.sqrt(Math.pow(x - lastPoint.x, 2) + Math.pow(y - lastPoint.y, 2));
-            
-            // Solo agregar si la distancia es mayor a 2 píxeles para optimizar
-            if (distance > 2) {
-                editorState.currentPath.push({x, y});
-            }
-        }
-
         function updateSaveButtonState() {
             const patternNameInput = document.getElementById('patternNameInput');
             const hasDrawing = editorState.drawnShapes.length > 0;
@@ -1947,10 +1211,6 @@
                     drawLine(editorCtx, shape.x1, shape.y1, shape.x2, shape.y2);
                 } else if (shape.type === 'circle') {
                     drawCircle(editorCtx, shape.x, shape.y, shape.radius);
-                } else if (shape.type === 'arc') {
-                    drawArc(editorCtx, shape.centerX, shape.centerY, shape.radius, shape.startAngle, shape.endAngle);
-                } else if (shape.type === 'freehand') {
-                    drawFreehand(editorCtx, shape.points);
                 }
             });
             updateSaveButtonState();
@@ -2016,35 +1276,6 @@
                             0, 2 * Math.PI
                         );
                         ctx.stroke();
-                    } else if (shape.type === 'arc') {
-                        ctx.beginPath();
-                        ctx.arc(
-                            centerX + (shape.centerX - 150) * scale,
-                            centerY + (shape.centerY - 150) * scale,
-                            shape.radius * scale,
-                            shape.startAngle,
-                            shape.endAngle,
-                            false
-                        );
-                        ctx.stroke();
-                    } else if (shape.type === 'freehand') {
-                        if (shape.points.length > 1) {
-                            ctx.beginPath();
-                            const firstPoint = shape.points[0];
-                            ctx.moveTo(
-                                centerX + (firstPoint.x - 150) * scale,
-                                centerY + (firstPoint.y - 150) * scale
-                            );
-                            
-                            for (let i = 1; i < shape.points.length; i++) {
-                                const point = shape.points[i];
-                                ctx.lineTo(
-                                    centerX + (point.x - 150) * scale,
-                                    centerY + (point.y - 150) * scale
-                                );
-                            }
-                            ctx.stroke();
-                        }
                     }
                 });
                 
@@ -2104,35 +1335,6 @@
                                 0, 2 * Math.PI
                             );
                             ctx.stroke();
-                        } else if (shape.type === 'arc') {
-                            ctx.beginPath();
-                            ctx.arc(
-                                centerX + (shape.centerX - 150) * scale,
-                                centerY + (shape.centerY - 150) * scale,
-                                shape.radius * scale,
-                                shape.startAngle,
-                                shape.endAngle,
-                                false
-                            );
-                            ctx.stroke();
-                        } else if (shape.type === 'freehand') {
-                            if (shape.points.length > 1) {
-                                ctx.beginPath();
-                                const firstPoint = shape.points[0];
-                                ctx.moveTo(
-                                    centerX + (firstPoint.x - 150) * scale,
-                                    centerY + (firstPoint.y - 150) * scale
-                                );
-                                
-                                for (let i = 1; i < shape.points.length; i++) {
-                                    const point = shape.points[i];
-                                    ctx.lineTo(
-                                        centerX + (point.x - 150) * scale,
-                                        centerY + (point.y - 150) * scale
-                                    );
-                                }
-                                ctx.stroke();
-                            }
                         }
                     });
                     
@@ -2215,20 +1417,7 @@
                         if (finalX > -patternSize && finalX < displayWidth + patternSize && 
                             finalY > -patternSize && finalY < displayHeight + patternSize) {
                             const strokeWidthPx = state.strokeWidth * CONFIG.MM_TO_PX * Math.min(scaleX, scaleY);
-                            
-                            // Aplicar rotación si es necesario
-                            if (state.rotation !== 0) {
-                                ctx.save();
-                                ctx.translate(finalX, finalY);
-                                ctx.rotate((state.rotation * Math.PI) / 180);
-                                ctx.translate(-finalX, -finalY);
-                            }
-                            
                             patternFunc(ctx, finalX, finalY, patternSize, strokeWidthPx, state.color, state.dashGap);
-                            
-                            if (state.rotation !== 0) {
-                                ctx.restore();
-                            }
                         }
                     }
                 }
@@ -2324,40 +1513,6 @@
             renderPattern();
         });
 
-        rotationRange.addEventListener('input', function() {
-            state.rotation = parseInt(this.value);
-            rotationValue.textContent = this.value + '°';
-            renderPattern();
-        });
-
-        // Botones rápidos de rotación
-        document.getElementById('rotate0').addEventListener('click', function() {
-            state.rotation = 0;
-            rotationRange.value = 0;
-            rotationValue.textContent = '0°';
-            renderPattern();
-        });
-
-        document.getElementById('rotate45').addEventListener('click', function() {
-            state.rotation = 45;
-            rotationRange.value = 45;
-            rotationValue.textContent = '45°';
-            renderPattern();
-        });
-
-        document.getElementById('rotate90').addEventListener('click', function() {
-            state.rotation = 90;
-            rotationRange.value = 90;
-            rotationValue.textContent = '90°';
-            renderPattern();
-        });
-
-        document.getElementById('rotate180').addEventListener('click', function() {
-            state.rotation = 180;
-            rotationRange.value = 180;
-            rotationValue.textContent = '180°';
-            renderPattern();
-        });
 
         widthInput.addEventListener('input', function() {
             const value = parseFloat(this.value) || 21.0;
@@ -2452,20 +1607,7 @@
                             if (finalX > -patternSizePx && finalX < fullWidth + patternSizePx && 
                                 finalY > -patternSizePx && finalY < fullHeight + patternSizePx) {
                                 const strokeWidthPx = state.strokeWidth * CONFIG.MM_TO_PX;
-                                
-                                // Aplicar rotación si es necesario
-                                if (state.rotation !== 0) {
-                                    tempCtx.save();
-                                    tempCtx.translate(finalX, finalY);
-                                    tempCtx.rotate((state.rotation * Math.PI) / 180);
-                                    tempCtx.translate(-finalX, -finalY);
-                                }
-                                
                                 patternFunc(tempCtx, finalX, finalY, patternSizePx, strokeWidthPx, state.color, state.dashGap);
-                                
-                                if (state.rotation !== 0) {
-                                    tempCtx.restore();
-                                }
                             }
                         }
                     }
@@ -2528,42 +1670,6 @@
                 if (editorState.currentTool === 'erase') {
                     editorState.isErasing = true;
                     eraseAtPosition(pos.x, pos.y);
-                } else if (editorState.currentTool === 'freehand') {
-                    editorState.isDrawing = true;
-                    editorState.currentPath = [];
-                    addPointToCurrentPath(pos.x, pos.y);
-                } else if (editorState.currentTool === 'arc') {
-                    // Proceso de 3 pasos para el arco
-                    if (editorState.arcStep === 0) {
-                        // Paso 1: Definir centro
-                        editorState.arcCenter = {x: pos.x, y: pos.y};
-                        editorState.arcStep = 1;
-                    } else if (editorState.arcStep === 1) {
-                        // Paso 2: Definir radio
-                        const dx = pos.x - editorState.arcCenter.x;
-                        const dy = pos.y - editorState.arcCenter.y;
-                        editorState.arcRadius = Math.sqrt(dx * dx + dy * dy);
-                        editorState.arcStartAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
-                        editorState.arcStep = 2;
-                    } else if (editorState.arcStep === 2) {
-                        // Paso 3: Definir ángulo final y crear arco
-                        const endAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
-                        
-                        if (editorState.arcRadius > 5) { // Evitar arcos muy pequeños
-                            editorState.drawnShapes.push({
-                                type: 'arc',
-                                centerX: editorState.arcCenter.x,
-                                centerY: editorState.arcCenter.y,
-                                radius: editorState.arcRadius,
-                                startAngle: editorState.arcStartAngle,
-                                endAngle: endAngle
-                            });
-                        }
-                        
-                        editorState.arcStep = 0; // Resetear para el próximo arco
-                        redrawCanvas();
-                        updateSaveButtonState();
-                    }
                 } else {
                     editorState.isDrawing = true;
                     editorState.startX = pos.x;
@@ -2581,60 +1687,27 @@
                     if (editorState.isErasing) {
                         eraseAtPosition(pos.x, pos.y);
                     }
-                } else if (editorState.currentTool === 'arc') {
-                    // Preview del arco en construcción
-                    if (editorState.arcStep > 0) {
-                        redrawCanvas();
-                        
-                        if (editorState.arcStep === 1) {
-                            // Mostrar guías para definir radio
-                            const dx = pos.x - editorState.arcCenter.x;
-                            const dy = pos.y - editorState.arcCenter.y;
-                            const tempRadius = Math.sqrt(dx * dx + dy * dy);
-                            drawArcGuides(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, tempRadius, pos.x, pos.y, 1);
-                        } else if (editorState.arcStep === 2) {
-                            // Mostrar preview del arco final
-                            const endAngle = calculateAngle(editorState.arcCenter.x, editorState.arcCenter.y, pos.x, pos.y);
-                            drawArcGuides(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, editorState.arcRadius, pos.x, pos.y, 2);
-                            
-                            // Preview del arco final
-                            editorCtx.strokeStyle = '#1e1b4b';
-                            editorCtx.lineWidth = 2;
-                            editorCtx.setLineDash([2, 2]);
-                            drawArc(editorCtx, editorState.arcCenter.x, editorState.arcCenter.y, editorState.arcRadius, editorState.arcStartAngle, endAngle);
-                            editorCtx.setLineDash([]);
-                        }
-                    }
                 } else {
                     hideEraserCircle();
                     
                     // Preview temporal mientras se dibuja
                     if (editorState.isDrawing) {
-                        if (editorState.currentTool === 'freehand') {
-                            // Dibujo a mano alzada en tiempo real
-                            addPointToCurrentPath(pos.x, pos.y);
-                            redrawCanvas();
-                            editorCtx.strokeStyle = '#1e1b4b';
-                            editorCtx.lineWidth = 2;
-                            drawFreehand(editorCtx, editorState.currentPath);
-                        } else {
-                            redrawCanvas();
-                            editorCtx.strokeStyle = '#1e1b4b';
-                            editorCtx.lineWidth = 2;
-                            editorCtx.setLineDash([2, 2]); // Línea punteada para preview
-                            
-                            if (editorState.currentTool === 'line') {
-                                drawLine(editorCtx, editorState.startX, editorState.startY, pos.x, pos.y);
-                            } else if (editorState.currentTool === 'circle') {
-                                const radius = Math.sqrt(
-                                    Math.pow(pos.x - editorState.startX, 2) + 
-                                    Math.pow(pos.y - editorState.startY, 2)
-                                );
-                                drawCircle(editorCtx, editorState.startX, editorState.startY, radius);
-                            }
-                            
-                            editorCtx.setLineDash([]); // Restaurar línea sólida
+                        redrawCanvas();
+                        editorCtx.strokeStyle = '#1e1b4b';
+                        editorCtx.lineWidth = 2;
+                        editorCtx.setLineDash([2, 2]); // Línea punteada para preview
+                        
+                        if (editorState.currentTool === 'line') {
+                            drawLine(editorCtx, editorState.startX, editorState.startY, pos.x, pos.y);
+                        } else if (editorState.currentTool === 'circle') {
+                            const radius = Math.sqrt(
+                                Math.pow(pos.x - editorState.startX, 2) + 
+                                Math.pow(pos.y - editorState.startY, 2)
+                            );
+                            drawCircle(editorCtx, editorState.startX, editorState.startY, radius);
                         }
+                        
+                        editorCtx.setLineDash([]); // Restaurar línea sólida
                     }
                 }
             });
@@ -2668,16 +1741,6 @@
                                 radius: radius
                             });
                         }
-                    } else if (editorState.currentTool === 'freehand') {
-                        // Finalizar y guardar trazo a mano alzada
-                        addPointToCurrentPath(pos.x, pos.y);
-                        if (editorState.currentPath.length > 1) { // Evitar trazos muy cortos
-                            editorState.drawnShapes.push({
-                                type: 'freehand',
-                                points: [...editorState.currentPath]
-                            });
-                        }
-                        editorState.currentPath = []; // Limpiar trazo actual
                     }
                     
                     redrawCanvas();
@@ -2695,24 +1758,6 @@
 
             patternEditorCanvas.addEventListener('mouseleave', function() {
                 hideEraserCircle();
-                
-                // Si estaba dibujando a mano alzada, finalizar el trazo
-                if (editorState.isDrawing && editorState.currentTool === 'freehand' && editorState.currentPath.length > 1) {
-                    editorState.drawnShapes.push({
-                        type: 'freehand',
-                        points: [...editorState.currentPath]
-                    });
-                    editorState.currentPath = [];
-                    redrawCanvas();
-                    updateSaveButtonState();
-                }
-                
-                // Resetear estado del arco si se sale del canvas
-                if (editorState.currentTool === 'arc') {
-                    editorState.arcStep = 0;
-                    redrawCanvas();
-                }
-                
                 editorState.isDrawing = false;
                 editorState.isErasing = false;
             });
@@ -2727,22 +1772,11 @@
 
         // Inicializar aplicación
         function init() {
-            debugLog('Iniciando función init...');
-            try {
-                debugLog('Inicializando referencias del editor...');
-                initializeEditorReferences(); // Inicializar referencias DOM del editor
-                debugLog('Inicializando event listeners del editor...');
-                initializeEditorEventListeners(); // Inicializar event listeners del editor
-                debugLog('Cargando patrones personalizados...');
-                loadCustomPatterns(); // Cargar patrones personalizados guardados
-                debugLog('Configurando botón de eliminar...');
-                toggleDeleteButton(); // Verificar si mostrar botón de eliminar
-                debugLog('Renderizando patrón inicial...');
-                renderPattern();
-                debugLog('Inicialización completa!');
-            } catch (error) {
-                console.error('Error en init():', error);
-            }
+            initializeEditorReferences(); // Inicializar referencias DOM del editor
+            initializeEditorEventListeners(); // Inicializar event listeners del editor
+            loadCustomPatterns(); // Cargar patrones personalizados guardados
+            toggleDeleteButton(); // Verificar si mostrar botón de eliminar
+            renderPattern();
         }
 
         // Event listeners para arrastre del patrón
@@ -2788,22 +1822,11 @@
             e.preventDefault();
         });
 
-        // Función de debug para verificar que todo funciona
-        function debugLog(message) {
-            console.log('Sashiko Debug:', message);
-        }
-
         // Cargar aplicación cuando esté lista
-        try {
-            debugLog('Iniciando aplicación...');
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-            debugLog('Aplicación inicializada correctamente');
-        } catch (error) {
-            console.error('Error al inicializar aplicación:', error);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
     </script>
 
@@ -2820,8 +1843,6 @@
                 <div class="editor-tools">
                     <button class="tool-btn active" id="lineTool" data-tool="line">📏 Línea</button>
                     <button class="tool-btn" id="circleTool" data-tool="circle">⭕ Círculo</button>
-                    <button class="tool-btn" id="arcTool" data-tool="arc">🌙 Arco</button>
-                    <button class="tool-btn" id="freehandTool" data-tool="freehand">✏️ Lápiz</button>
                     <button class="tool-btn" id="eraseTool" data-tool="erase">🧽 Borrar</button>
                     <button class="tool-btn" id="clearTool" data-tool="clear">🗑️ Limpiar</button>
                 </div>
